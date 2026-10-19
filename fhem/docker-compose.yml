@@ -27,6 +27,7 @@ services:
           #  - "/dev/ttyUSB-TCM0@57600"
           #  - "/dev/ttyUSB-ZIG0"
       environment:
+        ## timezone
         TZ: Europe/Berlin
         FHEM_UID: 1011
         FHEM_GID: 20    # Gruppe Dialout
