@@ -1,0 +1,19 @@
+services:
+    fhem-docker:
+        container_name: fhem
+        restart: always
+        ports:
+            - 9083:8083
+        volumes:
+            - "./config:/opt/fhem"
+              #            - /dev/ttyUSB-TCM0:/dev/ttyUSB-TCM0 
+              #            - /dev/ttyUSB-ZIG0:/dev/ttyUSB-ZIG0
+
+              #image: fhem/fhem:latest
+        image: ghcr.io/fhem/fhem-docker:5-bookworm
+          #devices:
+          #  - "/dev/ttyUSB-TCM0@57600"
+        environment:
+          TZ: Europe/Berlin
+          FHEM_UID: 999
+          FHEM_GID: 20

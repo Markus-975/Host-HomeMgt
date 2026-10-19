@@ -1,0 +1,27 @@
+services:
+    fhemdb:
+        image: mysql:8.0
+        volumes:
+          - mysqldb:/var/lib/mysql
+        restart: always
+        container_name: fhemdb
+        hostname: fhemdb
+        environment:
+            MYSQL_ROOT_PASSWORD: mCtp6Fx!y5Z0aCCx7qk5a
+            MYSQL_DATABASE: fhem
+            MYSQL_USER: fhemuser
+            MYSQL_PASSWORD: mP!Wp8pTjlUTqTC5WWy9o
+        ports:
+          - 3306:3306
+          - 33060:33060
+            #- 80:80
+    fhem-docker:
+        container_name: fhem
+        ports:
+            - 9083:8083
+        volumes:
+            - ./config:/opt/fhem
+              #            - /dev/ttyUSB-TCM0:/dev/ttyUSB-TCM0 
+              #            - /dev/ttyUSB-ZIG0:/dev/ttyUSB-ZIG0
+        image: fhem/fhem:latest
+              #image: ghcr.io/fhem/fhem-docker:5-bullseye

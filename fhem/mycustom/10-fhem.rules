@@ -1,0 +1,9 @@
+#ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", ATTRS{iserial}=="3", SYMLINK+="ttyUSB-OW0"
+#ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", ATTRS{serial}=="bcm3808_usb", SYMLINK+="ttyUSB-OW0"
+# LinkUSB
+SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", ATTRS{serial}=="A900XZZR", MODE="660",GROUP="dialout", SYMLINK+="ttyUSB-OW0"
+# EnOCean - TMC310
+SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", ATTRS{serial}=="A5043OCC", MODE="660",GROUP="dialout", SYMLINK+="ttyUSB-TCM0"
+# Zigbee Stick
+SUBSYSTEM=="tty", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60", ATTRS{serial}=="76c0290fee6aef11b1bf9dadc169b110", MODE="660",GROUP="dialout", SYMLINK+="ttyUSB-ZIG0"
+#

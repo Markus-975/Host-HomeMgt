@@ -1,0 +1,29 @@
+services:
+    fhem-docker:
+      build:
+        context: .
+        dockerfile_inline: |
+          FROM ghcr.io/fhem/fhem-docker:5-bookworm
+          RUN <<EOF
+            cpm install --show-build-log-on-failure --configure-timeout=360 --workers=$(nproc) --local-lib-contained /usr/src/app/3rdparty/ DateTime SOAP::Lite
+            #LC_ALL=C DEBIAN_FRONTEND=noninteractive apt-get update
+            #LC_ALL=C DEBIAN_FRONTEND=noninteractive apt-get install -qqy --no-install-recommends libtimedate-perl libdatetime-timezone-perl  libdatetime-perl libdatetime-locale-perl libsoap-lite-perl
+            #LC_ALL=C apt-get autoremove -qqy && LC_ALL=C apt-get clean
+          EOF
+      pull_policy: build
+      container_name: fhem
+      restart: always
+      ports:
+        - 9083:8083
+      volumes:
+        - "./config:/opt/fhem"
+              #            - /dev/ttyUSB-TCM0:/dev/ttyUSB-TCM0 
+              #            - /dev/ttyUSB-ZIG0:/dev/ttyUSB-ZIG0
+
+          #devices:
+          #  - "/dev/ttyUSB-TCM0@57600"
+          #  - "/dev/ttyUSB-ZIG0"
+      environment:
+        TZ: Europe/Berlin
+        FHEM_UID: 999
+        FHEM_GID: 20
