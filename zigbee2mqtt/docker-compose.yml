@@ -1,0 +1,18 @@
+services:
+    zigbee2mqtt:
+        container_name: zigbee2mqtt
+        restart: unless-stopped
+          #devices:
+          #            - /dev/serial/by-id/usb-Texas_Instruments_TI_CC2531_USB_CDC___0X00124B0018ED3DDF-if00:/dev/ttyACM0
+          #- /dev/ttyUSB-ZIG0:/dev/ttyACM0
+          #        ports:
+          #            - 8080:8080
+        volumes:
+            - ./data:/app/data
+            - /run/udev:/run/udev:ro
+        devices:
+            - /dev/ttyUSB-ZIG0:/dev/ttyUSB-ZIG0
+        network_mode: host
+        environment:
+            - TZ=Europe/Berlin
+        image: ghcr.io/koenkk/zigbee2mqtt

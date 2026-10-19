@@ -1,0 +1,19 @@
+services:
+  db:
+    image: mariadb
+    restart: always
+    container_name: mariadb
+    environment:
+      MARIADB_ROOT_PASSWORD: ${MARIAPW}
+    ports:
+      - 3306:3306
+    volumes:
+      - ./data:/var/lib/mysql:Z
+  adminer:
+    image: adminer
+    container_name: mariadbadminer
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - 8081:8080

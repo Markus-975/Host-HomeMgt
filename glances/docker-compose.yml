@@ -1,0 +1,22 @@
+services:
+  glances:
+    #image: nicolargo/glances:ubuntu-latest
+    image: nicolargo/glances:latest-full
+    pid: host
+    network_mode: host
+    container_name: glances
+      #    ports:
+      #      - "61208:61208" # Host-Port:Container-Port
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro # Zugriff auf Docker-API
+      - /etc/localtime:/etc/localtime:ro # Zeitzone synchronisieren
+      - ./glances.conf:/glances/conf/glances.conf
+      - /:/mnt/vol/root:ro
+      - /var/lib/docker:/mnt/vol/docker:ro
+      - /srv:/mnt/vol/srv:ro
+    environment:
+      - TZ=Europe/Berlin # Ihre Zeitzone anpassen
+      - GLANCES_OPT=-C /glances/conf/glances.conf -w # Web-Interface aktivieren
+        #- GLANCES_OPT="-w --password" # Web-Interface aktivieren
+    restart: always
+

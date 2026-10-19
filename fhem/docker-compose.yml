@@ -1,0 +1,34 @@
+services:
+    fhem-docker:
+      build:
+        context: .
+        dockerfile_inline: |
+          FROM ghcr.io/fhem/fhem-docker:5-bookworm
+          RUN <<EOF
+            LC_ALL=C DEBIAN_FRONTEND=noninteractive apt-get update 
+            LC_ALL=C DEBIAN_FRONTEND=noninteractive apt-get install -qqy --no-install-recommends build-essential libssl-dev zlib1g-dev snmp
+            LC_ALL=C apt-get autoremove -qqy && LC_ALL=C apt-get clean 
+            cpm install --show-build-log-on-failure --configure-timeout=360 --workers=$(nproc) --local-lib-contained /usr/src/app/3rdparty/ DateTime SOAP::Lite
+          EOF
+      pull_policy: build
+      container_name: fhem
+      network_mode: host
+      restart: always
+        #      ports:
+        #        - 8083:8083
+      volumes:
+        - "./config:/opt/fhem"
+        - "/opt/backup/HomeMgt/fhem:/opt/backup"
+      devices:
+        - "/dev/ttyUSB-TCM0:/dev/ttyUSB-TCM0"
+        - "/dev/ttyUSB-ZIG0:/dev/ttyUSB-ZIG0"
+
+          #devices:
+          #  - "/dev/ttyUSB-TCM0@57600"
+          #  - "/dev/ttyUSB-ZIG0"
+      environment:
+        TZ: Europe/Berlin
+        FHEM_UID: 1011
+        FHEM_GID: 20    # Gruppe Dialout
+        TELNETPORT: 7072
+        CONFIGTYPE: configDB

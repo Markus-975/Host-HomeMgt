@@ -1,0 +1,17 @@
+services:
+  watchtower:
+     container_name: watchtower
+     restart: unless-stopped
+     environment:
+       - TZ=Europe/Berlin
+         #       - WATCHTOWER_RUN_ONCE=true
+         #       - WATCHTOWER_UPDATE_ON_START=true
+       - WATCHTOWER_SCHEDULE= 0 0 4 * * *
+       - WATCHTOWER_NOTIFICATIONS_HOSTNAME=${TELEGRAMHOST}
+       - WATCHTOWER_NOTIFICATIONS=shoutrrr
+       - WATCHTOWER_NOTIFICATION_URL=${TELEGRAMURL}
+         #       - WATCHTOWER_DISABLE_CONTAINERS=air-pdf-printer
+     volumes:
+       - /var/run/docker.sock:/var/run/docker.sock
+     image: nickfedor/watchtower
+
