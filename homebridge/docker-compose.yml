@@ -10,6 +10,12 @@ services:
     environment:
       - TZ=Europe/Berlin  # Optional: Set your timezone
       - ENABLE_AVAHI=1      # Optional: Enable/disable Avahi (1=enabled, 0=disabled)
+    labels:
+      - wud.watch=true
+      - wud.watch.digest=true
+      - wud.trigger.include=dockercompose
+        #- wud.trigger.include=dockercompose,telegram
+      - wud.trigger.dockercompose.homebridge=true
     logging:
       driver: json-file
       options:

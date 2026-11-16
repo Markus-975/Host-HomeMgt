@@ -1,0 +1,34 @@
+services:
+
+  root-ca:
+    image: smallstep/step-ca:latest
+    container_name: step-ca
+    hostname: ca1.homelab.loc
+
+    restart: unless-stopped
+
+    ports:
+      - "9000:9000"
+    labels:
+      - "wud.watch.digest=true"
+    environment:
+      DOCKER_STEPCA_INIT_NAME: "${STEP_CA_NAME}"
+      DOCKER_STEPCA_INIT_DNS_NAMES: "${STEP_CA_DNS},${STEP_CA_IP},localhost"
+      DOCKER_STEPCA_INIT_PROVISIONER_NAME: "${STEP_CA_PROVISIONER}"
+      DOCKER_STEPCA_INIT_PASSWORD: "${STEP_CA_PASSWORD}"
+      DOCKER_STEPCA_INIT_REMOTE_MANAGEMENT: "true"
+
+    volumes:
+      #- /opt/data/step-ca:/home/step
+      - step-ca:/home/step
+
+    networks:
+      - pki
+volumes:
+  step-ca:
+    name: step-ca
+networks:
+  pki:
+    name: pki
+    external: true
+

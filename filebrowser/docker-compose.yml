@@ -4,6 +4,11 @@ services:
     container_name: filebrowser
     ports:
       - "8082:80"
+    labels:
+      - wud.watch=true
+      - wud.watch.digest=true
+      - wud.trigger.include=dockercompose
+      - wud.trigger.dockercompose.homebridge=true
     volumes:
       - /opt/backup:/srv
       - ./filebrowser.db:/database.db

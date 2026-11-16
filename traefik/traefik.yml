@@ -1,0 +1,54 @@
+#traefik.yml
+#
+api:
+  dashboard: true # Optional can be disabled
+  insecure: true # Optional can be disabled
+  debug: false # Optional can be Enabled if needed for troubleshooting
+service:
+  spec:
+    externalTrafficPolicy: Local
+entryPoints:
+  web:
+    address: ":80"
+    proxyProtocol:
+      insecure: true
+      trustedIPs: 0.0.0.0/0
+    forwardedHeaders:
+      insecure: true
+      trustedIPs: 0.0.0.0/0
+  # Optional if you want to redirect all HTTP to HTTPS
+  #  http:
+  #    redirections:
+  #      entryPoint:
+  #        to: websecure
+  #        scheme: https
+  websecure:
+    address: ":443"
+    proxyProtocol:
+      insecure: true
+      trustedIPs: 0.0.0.0/0
+    forwardedHeaders:
+      insecure: true
+      trustedIPs: 0.0.0.0/0
+  traefik:
+    address: ":8080"
+serversTransport:
+  insecureSkipVerify: true
+providers:
+  docker:
+    endpoint: "unix:///var/run/docker.sock"
+    exposedByDefault: false
+      #network: dmzlan # Optional; Only use the "proxy" Docker network, even if containers are on multiple networks.
+  file:
+    directory: /etc/traefik/dynamic
+    watch: true
+certificatesResolvers:
+  internal:
+    acme:
+      email: admin@homelab.loc
+      storage: /certs/acmeinernal.json
+      caServer: https://ca1.homelab.loc:9000/acme/acme/directory # prod (default)
+      cacertificates: /certs/root_ca.crt
+      httpChallenge:
+        entryPoint: web
+

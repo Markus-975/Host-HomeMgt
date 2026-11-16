@@ -7,6 +7,8 @@ services:
     container_name: glances
       #    ports:
       #      - "61208:61208" # Host-Port:Container-Port
+    labels:
+      - "wud.watch.digest=true"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro # Zugriff auf Docker-API
       - /etc/localtime:/etc/localtime:ro # Zeitzone synchronisieren

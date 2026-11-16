@@ -1,0 +1,61 @@
+services:
+  kopia:
+    image: kopia/kopia:latest
+    container_name: kopia
+    restart: unless-stopped
+
+    ports:
+      - "51515:51515"
+
+    volumes:
+      - ./config:/app/config
+        #- ./cache:/app/cache
+      - kopia-cache:/app/cache
+      - kopia-logs:/app/logs
+
+      # lokales Backup Repository
+      - /opt/archive:/repository
+
+    labels:
+      - wud.watch.digest=true
+      - wud.trigger.include=dockercompose
+        #- wud.trigger.include=dockercompose,telegram
+      - wud.trigger.dockercompose.kopia=true
+
+      #### Loadbalancer
+      - traefik.enable=true
+      - traefik.docker.network=traefik_internal
+      # "HTTPS Router"
+      - traefik.http.routers.kopia.rule=Host(`kopia.homelab.loc`)
+      - traefik.http.routers.kopia.entrypoints=websecure
+      - traefik.http.routers.kopia.tls=true
+      # Router -> Service
+      - traefik.http.routers.kopia.service=kopia
+      # CA Auswahl
+      - traefik.http.routers.kopia.tls.certresolver=internal
+      # Port innerhalb des Containers
+      - traefik.http.services.kopia.loadbalancer.server.port=51515
+
+    command:
+      - server
+      - start
+      - --address=0.0.0.0:51515
+        #- --server-username=${USER}
+      - --server-username=bckadmin
+      - --server-password=${PASS}
+      - --insecure
+
+    environment:
+      TZ: Europe/Berlin
+      KOPIA_PASSWORD: ${KOPIA_PASSWORD}
+    networks:
+      - traefik_internal
+networks:
+  traefik_internal:
+    external: true
+    name: traefik_internal
+volumes:
+  kopia-cache:
+    name: kopia-cache
+  kopia-logs:
+    name: kopia-logs

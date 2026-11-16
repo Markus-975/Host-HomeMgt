@@ -5,8 +5,53 @@ services:
     environment:
       - WUD_AUTH_ADMIN_USER=${WUD_AUTH_ADMIN_USER}
       - WUD_AUTH_ADMIN_PASSWORD=${WUD_AUTH_ADMIN_PASSWORD}
+      - WUD_TRIGGER_TELEGRAM_telegram_ENABLED=${WUD_TRIGGER_TELEGRAM_1_ENABLED}
+      - WUD_TRIGGER_TELEGRAM_telegram_TOKEN=${WUD_TRIGGER_TELEGRAM_1_TOKEN}
+      - WUD_TRIGGER_TELEGRAM_telegram_CHATS=${WUD_TRIGGER_TELEGRAM_1_CHATS}
+      - WUD_WATCHER_LOCAL_WATCHBYDEFAULT=true
+        #      - WUD_TRIGGER_DOCKER_LOCAL_SOCKET=/var/run/docker.sock
+      - WUD_TRIGGER_DOCKER_PRUNE=true
+        #- WUD_TRIGGER_DOCKERCOMPOSE_LOCAL_AUTO=true
+        #- WUD_TRIGGER_DOCKERCOMPOSE_LOCAL_BACKUP=true
+        #- WUD_TRIGGER_DOCKERCOMPOSE_LOCAL_FILE="/opt/docker/WUD/docker-compose.yml"
+      # Homebridge
+      - WUD_TRIGGER_DOCKERCOMPOSE_homebridge_AUTO=false
+      - WUD_TRIGGER_DOCKERCOMPOSE_homebridge_BACKUP=true
+      - WUD_TRIGGER_DOCKERCOMPOSE_homebridge_PRUNE=true
+        #- WUD_TRIGGER_DOCKERCOMPOSE_homebridge_FILE=/homebridge/docker-compose.yml
+      #- WUD_TRIGGER_DOCKERCOMPOSE_LOCAL_PRUNE=true
+        #- WUD_WATCHER_LOCAL_SOCKET="/var/run/docker.sock"
+        #- WUD_WATCHER_iDocker1_HOST="192.168.12.49"
+        #- WUD_WATCHER_iDocker1_PORT="2375"
+        #- WUD_WATCHER_LOCAL_CONTAINERDIGESTS__FILE: /config/container-digests.json
+    networks:
+      - traefik_internal
+    labels:
+      - wud.watch=true
+      - wud.watch.digest=true
+      - wud.trigger.include=dockercompose
+      - wud.trigger.dockercompose.homebridge=true
+      #### Loadbalancer
+      - traefik.enable=true
+      - traefik.docker.network=traefik_internal
+      # "HTTPS Router"
+      - traefik.http.routers.wud.rule=Host(`wud.homelab.loc`)
+      - traefik.http.routers.wud.entrypoints=websecure
+      - traefik.http.routers.wud.tls=true
+      # Router -> Service
+      - traefik.http.routers.wud.service=wud
+      # CA Auswahl
+      - traefik.http.routers.wud.tls.certresolver=internal
+      # Port innerhalb des Containers
+      - traefik.http.services.wud.loadbalancer.server.port=3000
+
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      - /opt/docker/homebridge/docker-compose.yml:/homebridge/docker-compose.yml
     ports:
       - 3000:3000
+networks:
+  traefik_internal:
+    external: true
+    name: traefik_internal
 

@@ -48,5 +48,5 @@ git add .gitignore
 git commit -m "Initial docker compose import"
 
 ### Abgleich mit Github
-git push -u origin main
+git push -u origin master
 

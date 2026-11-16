@@ -11,6 +11,8 @@ services:
        - WATCHTOWER_NOTIFICATIONS=shoutrrr
        - WATCHTOWER_NOTIFICATION_URL=${TELEGRAMURL}
          #       - WATCHTOWER_DISABLE_CONTAINERS=air-pdf-printer
+    labels:
+      - "wud.watch.digest=true"
      volumes:
        - /var/run/docker.sock:/var/run/docker.sock
      image: nickfedor/watchtower

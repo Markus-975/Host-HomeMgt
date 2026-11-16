@@ -1,0 +1,67 @@
+services:
+  traefik:
+    image: traefik:v3.6
+    container_name: traefik
+    restart: unless-stopped
+    command:
+      - "--api.insecure=true"
+      - "--api=true"
+      - "--api.debug=true"
+        #      - "--log.level=DEBUG"
+        #      - "--log.filePath=/logs/traefik.log"
+      - "--accesslog=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--entryPoints.websecure.proxyProtocol.insecure"
+      - "--entrypoints.webportal.address=:8090"
+      - "--entryPoints.webportal.forwardedHeaders.insecure"
+      - "--entryPoints.webportal.forwardedHeaders.trustedIPs=0.0.0.0/0"
+      - "--entryPoints.webportal.proxyProtocol.insecure"
+      - "--providers.file.filename=/home/appuser/data/config/tls.yml"
+      - "--providers.file.watch=true"
+    ports:
+      - "80:80"
+      - "8088:8080"
+      - "443:443"
+      - "8090:8090"
+    networks:
+      - default
+      - traefik_internal
+      - pki
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik_internal"
+      - "traefik.http.routers.traefik.entrypoints=web"
+      - "traefik.http.routers.traefik.rule= Host(`traefik.localhost`)"
+      - "traefik.http.routers.api.entrypoints=websecure"
+      - "traefik.http.routers.api.tls=true"
+      - "traefik.http.routers.api.rule=Host(`traefik.localhost`)"
+      - "traefik.http.routers.api.service=api@internal"
+      - "traefik.http.routers.api.tls=true"
+        ### global http - https redirect
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.permanent=true"
+      - "traefik.http.routers.redirs.rule=hostregexp(`{host:.+}`)"
+      - "traefik.http.routers.redirs.entrypoints=web"
+      - "traefik.http.routers.redirs.middlewares=redirect-to-https"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./traefik.yml:/traefik.yml:ro
+      - ./data:/home/appuser/data
+      - ./dynamic:/etc/traefik/dynamic
+      - traefik-certs:/certs
+      - traefik-logs:/logs
+networks:
+  traefik_internal:
+    external: true
+    name: traefik_internal
+  pki:
+    external: true
+    name: pki
+volumes:
+  traefik-certs:
+    name: traefik-certs
+  traefik-logs:
+    name: traefik-logs

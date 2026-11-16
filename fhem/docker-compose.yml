@@ -19,6 +19,9 @@ services:
       volumes:
         - "./config:/opt/fhem"
         - "/opt/backup/HomeMgt/fhem:/opt/backup"
+        - "/home/ansible/triggers:/opt/triggers"
+      labels:
+        - "wud.watch.digest=false"
       devices:
         - "/dev/ttyUSB-TCM0:/dev/ttyUSB-TCM0"
         - "/dev/ttyUSB-ZIG0:/dev/ttyUSB-ZIG0"
@@ -33,3 +36,9 @@ services:
         FHEM_GID: 20    # Gruppe Dialout
         TELNETPORT: 7072
         CONFIGTYPE: configDB
+    fhem-base-watch:
+      image: ghcr.io/fhem/fhem-docker:5-bookworm
+      container_name: fhem-base-watch
+      command: sleep infinity
+      labels:
+        - wud.watch=true
