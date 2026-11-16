@@ -12,7 +12,7 @@ services:
         #- ./cache:/app/cache
       - kopia-cache:/app/cache
       - kopia-logs:/app/logs
-
+      - /var/lib/docker/volumes:/docker-volumes:ro
       # lokales Backup Repository
       - /opt/archive:/repository
 

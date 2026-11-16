@@ -24,6 +24,7 @@ services:
         #- WUD_WATCHER_iDocker1_HOST="192.168.12.49"
         #- WUD_WATCHER_iDocker1_PORT="2375"
         #- WUD_WATCHER_LOCAL_CONTAINERDIGESTS__FILE: /config/container-digests.json
+    restart: always
     networks:
       - traefik_internal
     labels:

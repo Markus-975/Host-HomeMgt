@@ -17,7 +17,8 @@ services:
         #      ports:
         #        - 8083:8083
       volumes:
-        - "./config:/opt/fhem"
+        #- "./config:/opt/fhem"
+        - fhem:/opt/fhem
         - "/opt/backup/HomeMgt/fhem:/opt/backup"
         - "/home/ansible/triggers:/opt/triggers"
       labels:
@@ -42,3 +43,6 @@ services:
       command: sleep infinity
       labels:
         - wud.watch=true
+volumes:
+  fhem:
+    name: fhem

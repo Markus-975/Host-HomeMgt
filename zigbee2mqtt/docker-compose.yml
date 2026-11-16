@@ -10,7 +10,8 @@ services:
         labels:
           - "wud.watch.digest=true"
         volumes:
-            - ./data:/app/data
+          #- ./data:/app/data
+            - zigbee2mqtt:/app/data
             - /run/udev:/run/udev:ro
         devices:
             - /dev/ttyUSB-ZIG0:/dev/ttyUSB-ZIG0
@@ -18,3 +19,7 @@ services:
         environment:
             - TZ=Europe/Berlin
         image: ghcr.io/koenkk/zigbee2mqtt
+
+volumes:
+  zigbee2mqtt:
+    name: zigbee2mqtt
